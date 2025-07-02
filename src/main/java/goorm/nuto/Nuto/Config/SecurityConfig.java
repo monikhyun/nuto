@@ -30,6 +30,13 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/register/**").permitAll() // 만약 따로 쓰는 회원가입 경로가 있다면 유지
+                        .requestMatchers(
+                                "/swagger-ui.html",             // 구버전
+                                "/swagger-ui/**",               // 최신 UI 리소스
+                                "/v3/api-docs/**",              // OpenAPI 스펙 JSON
+                                "/swagger-resources/**",        // Swagger 리소스
+                                "/webjars/**"                   // Swagger 의존 정적파일
+                        ).permitAll()
                         .requestMatchers(HttpMethod.POST,
                                 "/api/auth/login",
                                 "/api/auth/signup",

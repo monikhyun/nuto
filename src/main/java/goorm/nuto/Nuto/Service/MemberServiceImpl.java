@@ -105,8 +105,6 @@ public class MemberServiceImpl implements MemberService {
         String storedCode = redisService.getValues(AUTH_CODE_PREFIX + email)
                 .orElseThrow(() -> new VerificationFailedException("인증코드가 존재하지 않습니다. 다시 요청해주세요."));
 
-        log.info("인증 확인 - 입력 코드: {}", code);
-        log.info("인증 확인 - 저장된 코드: {}", storedCode);
 
         if (!storedCode.equals(code)) {
             throw new VerificationFailedException("인증코드가 일치하지 않습니다.");
