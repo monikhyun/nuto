@@ -1,10 +1,13 @@
 spring:
-
+  application:
+    name: Nuto
   config:
     import: classpath:application-secret.yml
   profiles:
     active: secret
 
+  jwt:
+    secret: e4d431f2694e61af4408f65107f8dcbe96e5a6948036ca315cebcf4cac04cf15
 
   logging.level:
     org.hibernate.SQL: debug
