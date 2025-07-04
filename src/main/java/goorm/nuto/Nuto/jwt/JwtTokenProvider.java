@@ -27,9 +27,10 @@ public class JwtTokenProvider {
     private final RedisService redisService;
     private final CustomUserDetailsService customUserDetailsService;
 
-    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey,
+    public JwtTokenProvider(@Value("${spring.jwt.secret}") String secretKey,
                             RedisService redisService,
                             CustomUserDetailsService customUserDetailsService) {
+        log.info("🔥 사용된 JWT 시크릿 키 (base64 디코딩 전): {}", secretKey);
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
         this.redisService = redisService;
