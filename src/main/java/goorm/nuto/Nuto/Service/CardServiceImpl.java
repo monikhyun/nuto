@@ -59,7 +59,12 @@ public class CardServiceImpl implements CardService {
             throw new NotAuthorizedCardAccessException("해당 사용자의 카드가 아닙니다.");
         }
 
-        CardResponseDto dto = new CardResponseDto(card);
+        CardResponseDto dto = CardResponseDto.builder()
+                .cardNumber(card.getCardNumber())
+                .totalAmount(card.getTotalAmount())
+                .cardType(card.getCardType())
+                .expiryDate(card.getExpiryDate())
+                .build();
 
         return dto;
 
@@ -76,7 +81,12 @@ public class CardServiceImpl implements CardService {
                 .orElseThrow(NotFoundCardException::new);
 
         return cards.stream()
-                .map(CardResponseDto::new)
+                .map(card -> CardResponseDto.builder()
+                        .cardNumber(card.getCardNumber())
+                        .totalAmount(card.getTotalAmount())
+                        .cardType(card.getCardType())
+                        .expiryDate(card.getExpiryDate())
+                        .build())
                 .toList();
 
 //        List<Card> cards = cardRepository.findAll();

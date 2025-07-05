@@ -4,6 +4,7 @@ import goorm.nuto.Nuto.Entity.CardType;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 
 @Data
 public class CardDto {
@@ -16,7 +17,7 @@ public class CardDto {
 
     private String cardType;
 
-    private LocalDate expiryDate;
+    private YearMonth expiryDate;
 
 
 }
