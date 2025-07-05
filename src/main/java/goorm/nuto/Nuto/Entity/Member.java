@@ -35,11 +35,11 @@ public class Member {
     private String job;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Card> cards = new ArrayList<>();
+    private List<Card> cards;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Income> incomes = new ArrayList<>();
+    private List<Income> incomes;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Receipt> receipts = new ArrayList<>();
+    private List<Receipt> receipts;
 }
