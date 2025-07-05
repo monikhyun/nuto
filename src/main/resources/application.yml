@@ -6,8 +6,12 @@ spring:
   profiles:
     active: secret
 
-  jwt:
-    secret: e4d431f2694e61af4408f65107f8dcbe96e5a6948036ca315cebcf4cac04cf15
-
-  logging.level:
-    org.hibernate.SQL: debug
+  logging:
+    level:
+      org:
+        hibernate:
+          SQL: debug
+          type:
+            descriptor:
+              sql:
+                BasicBinder: trace
