@@ -1,5 +1,7 @@
 package goorm.nuto.Nuto.Entity;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum CardType {
     SHINHAN("신한"),
     KB_KOOKMIN("국민"),
@@ -36,6 +38,7 @@ public enum CardType {
         this.displayName = displayName;
     }
 
+    @JsonValue
     @Override
     public String toString() {
         return displayName;

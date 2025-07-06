@@ -1,9 +1,12 @@
 package goorm.nuto.Nuto.Entity;
 
+import goorm.nuto.Nuto.Converter.CardTypeConverter;
+import goorm.nuto.Nuto.Converter.YearMonthAttributeConverter;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,12 +34,14 @@ public class Card {
 
     private Long totalAmount;
 
+    @Convert(converter = CardTypeConverter.class)
     @Enumerated(EnumType.STRING)
     private CardType cardType;
 
+    @Convert(converter = YearMonthAttributeConverter.class)
     @Column(nullable = false)
-    private LocalDate expiryDate;
+    private YearMonth expiryDate;
 
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Receipt> receipts = new ArrayList<>();
+    private List<Receipt> receipts;
 }
