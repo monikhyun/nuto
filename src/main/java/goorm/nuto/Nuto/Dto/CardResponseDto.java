@@ -24,5 +24,12 @@ public class CardResponseDto {
 
     private YearMonth expiryDate;
 
+    public CardResponseDto(Card card) {
+        this.cardNumber = card.getCardNumber();
+        this.totalAmount = card.getTotalAmount();
+        this.cardType = card.getCardType();
+        this.expiryDate = card.getExpiryDate();
+    }
+
 
 }
