@@ -12,6 +12,9 @@ import goorm.nuto.Nuto.Exception.NotFoundMemberException;
 import goorm.nuto.Nuto.Repository.CardRepository;
 import goorm.nuto.Nuto.Repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -89,13 +92,20 @@ public class CardServiceImpl implements CardService {
                         .build())
                 .toList();
 
-//        List<Card> cards = cardRepository.findAll();
-//
-//        List<CardResponseDto> cardResponseDtos = new ArrayList<>();
-//        for (Card card : cards) {
-//            cardResponseDtos.add(new CardResponseDto(card));
-//        }
-//        return cardResponseDtos;
+    }
+
+    @Override
+    public Page<CardResponseDto> getCardListPage(int page, int size, Long memberId) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+
+        Page<Card> cards = cardRepository.findByMemberOrderByIdDesc(member, pageable);
+
+        return cards.map(CardResponseDto::new);
+
     }
 
     @Override

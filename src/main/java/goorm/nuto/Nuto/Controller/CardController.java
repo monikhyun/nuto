@@ -7,6 +7,7 @@ import goorm.nuto.Nuto.Dto.CardResponseDto;
 import goorm.nuto.Nuto.Dto.CustomUserDetails;
 import goorm.nuto.Nuto.Service.CardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -33,12 +34,29 @@ public class CardController {
     }
 
     //카드 목록 화면
+//    @GetMapping("/")
+//    public  ResponseEntity<ApiResponse<List<CardResponseDto>>> getCardList(
+//            @AuthenticationPrincipal CustomUserDetails userDetails){
+//        Long memberId = userDetails.getMember().getId();
+//
+//        List<CardResponseDto> data = cardService.getCardList(memberId);
+//        return ResponseEntity.ok(ApiResponse.success("카드 목록 조회 성공", data));
+//    }
+
+    //카드 목록 화면 (페이지네이션)
     @GetMapping("/")
     public  ResponseEntity<ApiResponse<List<CardResponseDto>>> getCardList(
+            @RequestParam(defaultValue = "0") int page, // 현재 페이지
             @AuthenticationPrincipal CustomUserDetails userDetails){
+
+        int size = 5; // 크기
+
         Long memberId = userDetails.getMember().getId();
 
-        List<CardResponseDto> data = cardService.getCardList(memberId);
+        Page<CardResponseDto> pagedata = cardService.getCardListPage(page, size, memberId);
+
+        List<CardResponseDto> data = pagedata.getContent();
+
         return ResponseEntity.ok(ApiResponse.success("카드 목록 조회 성공", data));
     }
 
