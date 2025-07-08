@@ -59,4 +59,4 @@ cloudinary:
   api-secret: ${CLOUDINARY_API_SECRET}
 
 server:
-  port: ${PORT:8080}
+  port: ${PORT}
