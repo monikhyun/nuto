@@ -2,15 +2,12 @@ package goorm.nuto.Nuto.Service;
 
 import goorm.nuto.Nuto.Dto.CardDto;
 import goorm.nuto.Nuto.Dto.CardResponseDto;
-import goorm.nuto.Nuto.Entity.Card;
-import goorm.nuto.Nuto.Entity.CardType;
-import goorm.nuto.Nuto.Entity.Member;
+import goorm.nuto.Nuto.Entity.*;
 import goorm.nuto.Nuto.Exception.NotAuthorizedCardAccessException;
 import goorm.nuto.Nuto.Exception.NotFoundCardException;
 import goorm.nuto.Nuto.Exception.DuplicateCardNumberException;
 import goorm.nuto.Nuto.Exception.NotFoundMemberException;
-import goorm.nuto.Nuto.Repository.CardRepository;
-import goorm.nuto.Nuto.Repository.MemberRepository;
+import goorm.nuto.Nuto.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +25,9 @@ public class CardServiceImpl implements CardService {
 
     private final CardRepository cardRepository;
     private final MemberRepository memberRepository;
+    private final ReceiptRepository receiptRepository;
+    private final ConsumeRepository consumeRepository;
+    private final IncomeRepository incomeRepository;
 
     @Override
     public void saveCard(Long memberId, CardDto dto) {
@@ -35,7 +35,7 @@ public class CardServiceImpl implements CardService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
 
-        if (cardRepository.findByCardNumber(dto.getCardNumber()).isPresent()) {
+        if (cardRepository.findByMemberAndCardNumber(member, dto.getCardNumber()).isPresent()) {
             throw new DuplicateCardNumberException();
         }
 
@@ -133,14 +133,38 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public void deleteCard(Long memberId,Long cardId) {
-        Card card = cardRepository.findById(cardId)
-                .orElseThrow(NotFoundCardException::new);
+    public void deleteCards(Long memberId, List<Long> cardIds) {
+        // 기타 카드 조회
+        Card otherCard = cardRepository.findByCardTypeAndMemberId(CardType.OTHER, memberId)
+                .orElseThrow(() -> new RuntimeException("기타 카드가 존재하지 않습니다."));
 
-        if (!card.getMember().getId().equals(memberId)) {
-            throw new NotAuthorizedCardAccessException("해당 사용자의 카드가 아닙니다.");
+        for(Long cardId : cardIds) {
+            Card card = cardRepository.findById(cardId)
+                    .orElseThrow(NotFoundCardException::new);
+
+            if (!card.getMember().getId().equals(memberId)) {
+                throw new NotAuthorizedCardAccessException("해당 사용자의 카드가 아닙니다.");
+            }
+
+            //card - receipt - consume/income 삭제
+            List<Receipt> receipts = receiptRepository.findByCardId(cardId);
+
+            for (Receipt receipt : receipts) {
+
+                // 기타 카드로 교체
+                receipt.setCard(otherCard);
+
+                if (receipt.getCategory().getType() == CategoryType.EXPENSE) {
+                    consumeRepository.findConsumeByReceiptId(receipt.getId())
+                            .ifPresent(consume -> consume.setCard(otherCard));
+                } else {
+                    incomeRepository.findIncomeByReceiptId(receipt.getId())
+                            .ifPresent(income -> income.setCard(otherCard));
+                }
+            }
+
+            receiptRepository.saveAll(receipts);
+            cardRepository.delete(card);
         }
-
-        cardRepository.delete(card);
     }
 }

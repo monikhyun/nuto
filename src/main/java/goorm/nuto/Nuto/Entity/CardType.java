@@ -30,7 +30,8 @@ public enum CardType {
     MG_SAEMAUL("MG새마을금고"),
     KB_PAY("KB페이"),
     PAYCO("페이코"),
-    ZERO_PAY("제로페이");
+    ZERO_PAY("제로페이"),
+    OTHER("기타");
 
     private final String displayName;
 
