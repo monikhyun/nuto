@@ -7,6 +7,7 @@ import java.time.LocalDate;
 
 @Data
 public class ReceiptRequestDto {
+    private Long Id;
     private String name;
     private String shop_name;
     private Long price;

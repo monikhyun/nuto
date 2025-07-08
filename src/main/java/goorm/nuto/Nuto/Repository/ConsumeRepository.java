@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface ConsumeRepository extends JpaRepository<Consume, Long> {
     @Query("SELECT c.month, SUM(c.amount) " +
@@ -50,4 +51,7 @@ public interface ConsumeRepository extends JpaRepository<Consume, Long> {
     Long getTotalAmountBetweenDates(@Param("member") Member member,
                                     @Param("startDate") LocalDate startDate,
                                     @Param("endDate") LocalDate endDate);
+
+    Optional<Consume> findConsumeByReceiptId(Long receiptId);
+    void deleteByReceiptId(Long receiptId);
 }

@@ -42,4 +42,17 @@ public class Receipt {
 
     @Column(length = 1000)
     private String imageUrl;
+
+    public static Receipt create(String name, String shop_name, Long price, LocalDate date,
+                                 Card card, Category category, Member member) {
+        return Receipt.builder()
+                .name(name)
+                .shop_name(shop_name)
+                .date(date)
+                .price(price)
+                .card(card)
+                .category(category)
+                .member(member)
+                .build();
+    }
 }

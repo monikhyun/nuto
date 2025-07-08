@@ -1,16 +1,14 @@
 package goorm.nuto.Nuto.Controller;
 
-import goorm.nuto.Nuto.Dto.ApiResponse;
-import goorm.nuto.Nuto.Dto.ReceiptRequestDto;
-import goorm.nuto.Nuto.Dto.CustomUserDetails;
+import goorm.nuto.Nuto.Dto.*;
 import goorm.nuto.Nuto.Service.ReceiptService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/receipts")
@@ -29,5 +27,91 @@ public class ReceiptController {
         receiptService.saveReceipt(memberId, dto);
 
         return ResponseEntity.ok(ApiResponse.success("영수증 등록 성공"));
+    }
+
+    //[수입+지출]영수증 목록 화면 (페이지네이션)
+    @GetMapping("/monthly")
+    public  ResponseEntity<ApiResponse<List<MonthlyReceiptDto>>> getMonthlyReceiptPage(
+            @RequestParam(defaultValue = "0") int page, // 현재 페이지
+            @AuthenticationPrincipal CustomUserDetails userDetails){
+
+        int size = 4; // 크기
+
+        Long memberId = userDetails.getMember().getId();
+
+        Page<MonthlyReceiptDto> pagedata = receiptService.getMonthlyReceiptPage(page, size, memberId);
+
+        List<MonthlyReceiptDto> data = pagedata.getContent();
+
+        return ResponseEntity.ok(ApiResponse.success("영수증 목록 조회 성공", data));
+    }
+
+
+    //[지출]영수증 목록 화면 (페이지네이션)
+    @GetMapping("/monthly/consume")
+    public  ResponseEntity<ApiResponse<List<ReceiptResponseDto>>> getConsumeList(
+            @RequestParam int year,
+            @RequestParam int month,
+            @RequestParam(defaultValue = "0") int page, // 현재 페이지
+            @AuthenticationPrincipal CustomUserDetails userDetails){
+
+        int size = 6; // 크기
+
+        Long memberId = userDetails.getMember().getId();
+
+        Page<ReceiptResponseDto> pagedata = receiptService.getConsumeListPage(page, size, memberId, year, month);
+
+        List<ReceiptResponseDto> data = pagedata.getContent();
+
+        return ResponseEntity.ok(ApiResponse.success("영수증 목록 조회 성공", data));
+    }
+
+    //[수입]영수증 목록 화면 (페이지네이션)
+    @GetMapping("/monthly/income")
+    public  ResponseEntity<ApiResponse<List<ReceiptResponseDto>>> getIncomeList(
+            @RequestParam(defaultValue = "0") int page, // 현재 페이지
+            @AuthenticationPrincipal CustomUserDetails userDetails){
+
+        int size = 6; // 크기
+
+        Long memberId = userDetails.getMember().getId();
+
+        Page<ReceiptResponseDto> pagedata = receiptService.getIncomeListPage(page, size, memberId);
+
+        List<ReceiptResponseDto> data = pagedata.getContent();
+
+        return ResponseEntity.ok(ApiResponse.success("영수증 목록 조회 성공", data));
+    }
+
+    //영수증 조회
+    @GetMapping("/{receiptId}")
+    public ResponseEntity<ApiResponse<ReceiptResponseDto>> getReceipt(
+            @PathVariable("receiptId") Long receiptId,@AuthenticationPrincipal CustomUserDetails userDetails){
+        Long memberId = userDetails.getMember().getId();
+
+        ReceiptResponseDto data = receiptService.getReceipt(memberId, receiptId);
+        return ResponseEntity.ok(ApiResponse.success("영수증 조회 성공", data));
+    }
+
+    @PostMapping("/modify/{receiptId}")
+    public ResponseEntity<ApiResponse<String>> modifyReceipt(
+            @PathVariable("receiptId") Long receiptId, @RequestBody ReceiptRequestDto dto, @AuthenticationPrincipal CustomUserDetails userDetails){
+
+        Long memberId = userDetails.getMember().getId();
+
+        dto.setId(receiptId);
+
+        receiptService.modifyReceipt(memberId, dto);
+
+        return ResponseEntity.ok(ApiResponse.success("영수증 수정 성공"));
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<ApiResponse<String>> deleteReceipts(
+            @RequestBody DeleteRequestDto dto,@AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        Long memberId = userDetails.getMember().getId();
+        receiptService.deleteReceipts(memberId,dto.getIds());
+        return ResponseEntity.ok(ApiResponse.success("영수증 삭제 성공"));
     }
 }
