@@ -19,6 +19,7 @@ public class DashBoardTestInitializer {
     private final CategoryRepository categoryRepository;
     private final ConsumeRepository consumeRepository;
     private final IncomeRepository incomeRepository;
+    private final ReceiptRepository receiptRepository;
 
     @PostConstruct
     public void init() {
@@ -35,6 +36,8 @@ public class DashBoardTestInitializer {
                 .build();
         memberRepository.save(member);
 
+
+
         // 2. 카테고리 생성
         Category food = categoryRepository.save(Category.builder().name("식비").type(CategoryType.EXPENSE).build());
         Category transport = categoryRepository.save(Category.builder().name("교통비").type(CategoryType.EXPENSE).build());
@@ -48,6 +51,7 @@ public class DashBoardTestInitializer {
         Card card1 = cardRepository.save(Card.builder()
                 .cardNumber("1234-5678-9012-3456")
                 .cardType(CardType.KAKAOBANK)
+                .name("카카오페이 카드")
                 .member(member)
                 .expiryDate(YearMonth.of(2026, 12))
                 .totalAmount(500000L)
@@ -56,6 +60,7 @@ public class DashBoardTestInitializer {
         Card card2 = cardRepository.save(Card.builder()
                 .cardNumber("1111-2222-3333-4444")
                 .cardType(CardType.HYUNDAI)
+                .name("현대 청년 카드")
                 .member(member)
                 .expiryDate(YearMonth.of(2025, 11))
                 .totalAmount(300000L)
@@ -64,6 +69,7 @@ public class DashBoardTestInitializer {
         Card card3 = cardRepository.save(Card.builder()
                 .cardNumber("5555-6666-7777-8888")
                 .cardType(CardType.KB_KOOKMIN)
+                .name("국민 나라사랑 카드")
                 .member(member)
                 .expiryDate(YearMonth.of(2027, 1))
                 .totalAmount(400000L)
@@ -88,6 +94,12 @@ public class DashBoardTestInitializer {
         addConsume("의류", 45000L, today.minusDays(2), card3, clothes, member);
         addConsume("식비", 25000L, today.minusDays(1), card1, food, member);
 
+        addReceipt("영수증1", "GS25", 8000L, LocalDate.of(2025, 6, 3), card1, food, member, null);
+        addReceipt("영수증2", "스타벅스", 12000L, LocalDate.of(2025, 6, 8), card2, leisure, member, null);
+        addReceipt("영수증3", "이마트", 34000L, LocalDate.of(2025, 7, 2), card3, living, member, null);
+        addReceipt("영수증4", "CU", 5400L, LocalDate.of(2025, 7, 3), card1, food, member, null);
+        addReceipt("영수증5", "올리브영", 22000L, LocalDate.of(2025, 7, 4), card2, clothes, member, null);
+
         // 6. 최근 소비 (4개)
         for (int i = 0; i < 4; i++) {
             addConsume("최근소비" + i, 10000L + (i * 500), today.minusDays(i), card1, food, member);
@@ -111,5 +123,20 @@ public class DashBoardTestInitializer {
 
     private void addConsume(String name, Long amount, LocalDate date, Card card, Category category, Member member) {
         consumeRepository.save(Consume.create(name, amount, date, card, category, member));
+    }
+    private void addReceipt(String name, String shopName, Long price, LocalDate date,
+                            Card card, Category category, Member member, String imageUrl) {
+        Receipt receipt = Receipt.builder()
+                .name(name)                  // 영수증 제목
+                .shop_name(shopName)         // 매장명
+                .price(price)
+                .date(date)
+                .card(card)
+                .category(category)
+                .member(member)
+                .imageUrl(imageUrl)          // null 가능
+                .build();
+
+        receiptRepository.save(receipt);
     }
 }
