@@ -198,6 +198,7 @@ public class ReceiptServiceImpl implements ReceiptService {
                         .category(receipt.getCategory())
                         .date(receipt.getDate())
                         .amount((double) receipt.getPrice())
+                        .card(receipt.getCard())
                         .build();
                 incomeRepository.save(income);
             }
@@ -244,6 +245,7 @@ public class ReceiptServiceImpl implements ReceiptService {
 
                 income.setAmount((double) receipt.getPrice());
                 income.setDate(receipt.getDate());
+                income.setCard(receipt.getCard());
                 income.setCategory(receipt.getCategory());
 
                 incomeRepository.save(income);
