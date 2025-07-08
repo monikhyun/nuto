@@ -1,6 +1,7 @@
 package goorm.nuto.Nuto.Dto;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -11,4 +12,5 @@ public class ConsumeRequestDto {
     private LocalDate date;
     private Long cardId;
     private Long categoryId;
+    private MultipartFile image;
 }

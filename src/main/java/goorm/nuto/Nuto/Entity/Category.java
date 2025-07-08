@@ -22,7 +22,7 @@ public class Category {
     @Column(nullable = false)
     private String name;
 
-    // 카테고리 이름
+    // 대분류
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Category parent;

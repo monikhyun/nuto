@@ -42,6 +42,7 @@ dependencies {
 	implementation 'ognl:ognl:3.2.21'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+	implementation 'com.cloudinary:cloudinary-http44:1.37.0'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
