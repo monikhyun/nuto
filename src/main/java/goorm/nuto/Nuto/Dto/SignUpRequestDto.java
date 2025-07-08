@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class SignUpRequestDto {
 
     @Schema(description = "이메일 또는 로그인 ID", example = "user1@naver.com", required = true)
-    private String userid;
+    private String userId;
 
     @Schema(description = "회원 이름", example = "홍길동", required = true)
     private String name;

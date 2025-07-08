@@ -59,12 +59,12 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void signup(SignUpRequestDto request) {
         // 중복 이메일 확인
-        if (memberRepository.findByUserid(request.getUserid()).isPresent()) {
+        if (memberRepository.findByUserid(request.getUserId()).isPresent()) {
             throw new DuplicateEmailException("이미 사용 중인 이메일입니다.");
         }
 
         // 이메일 인증 확인
-        String verified = redisService.getValues(VERIFIED_EMAIL_PREFIX + request.getUserid())
+        String verified = redisService.getValues(VERIFIED_EMAIL_PREFIX + request.getUserId())
                 .orElseThrow(() -> new NotVerifiedEmailException("이메일 인증이 필요합니다."));
 
         if (!"true".equals(verified)) {
@@ -73,7 +73,7 @@ public class MemberServiceImpl implements MemberService {
 
         // 회원 생성
         Member member = Member.builder()
-                .userid(request.getUserid())
+                .userid(request.getUserId())
                 .name(request.getName())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .age(request.getAge())

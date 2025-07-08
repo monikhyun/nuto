@@ -34,6 +34,8 @@ public class Card {
 
     private Long totalAmount;
 
+    private String name;
+
     @Convert(converter = CardTypeConverter.class)
     @Enumerated(EnumType.STRING)
     private CardType cardType;
