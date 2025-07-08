@@ -20,16 +20,10 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: '21'
-          distribution: 'temurin'
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
+          distribution: 'microsoft'
 
       - name: Build with Gradle (skip tests)
         run: ./gradlew clean build -x test
-
-      - name: Check built JARs
-        run: ls -lh build/libs
 
       - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
@@ -57,11 +51,8 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_047246DA4A29441C81706A27CBFA7121 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_35636D69B5514C42B9FCB871289B214D }}
 
-      - name: Find JAR file (just to verify)
-        run: ls -lh *.jar
-
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'nuto'
-          package: 'build/libs/Nuto-0.0.1-SNAPSHOT.jar'
+          package: 'Nuto-0.0.1-SNAPSHOT.jar'
