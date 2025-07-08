@@ -35,7 +35,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: build/libs/*.jar
+          path: build/libs/Nuto-0.0.1-SNAPSHOT.jar
 
   deploy:
     runs-on: ubuntu-latest
