@@ -64,5 +64,4 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'nuto'
-          slot-name: 'Production'
           package: 'Nuto-0.0.1-SNAPSHOT.jar'
