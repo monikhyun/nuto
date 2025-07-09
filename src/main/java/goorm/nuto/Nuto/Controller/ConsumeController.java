@@ -7,6 +7,10 @@ import goorm.nuto.Nuto.Service.ConsumeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.StringToClassMapItem;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +37,72 @@ public class ConsumeController {
         return ResponseEntity.ok(ApiResponse.success("영수증 등록 성공"));
     }
 
-    // 전체 데이터 조회
+    @GetMapping("/all")
+    @Operation(summary = "전체 소비내역 조회", description = "최신순으로 5개씩 전체 소비내역을 페이지네이션하여 조회합니다.")
+    public ResponseEntity<ApiResponse<PageResponseDto<ConsumeListResponseDto>>> getAllConsumes(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
+        PageResponseDto<ConsumeListResponseDto> result = consumeService.getAllConsumeList(userDetails.getMember(), pageable);
+        return ResponseEntity.ok(ApiResponse.success("전체 소비내역 조회 성공", result));
+    }
+
+    @GetMapping("/month")
+    @Operation(summary = "월별 소비내역 조회", description = "선택한 월에 해당하는 소비내역을 페이지네이션하여 조회합니다.")
+    public ResponseEntity<ApiResponse<PageResponseDto<ConsumeListResponseDto>>> getConsumesByMonth(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam int year,
+            @RequestParam int month,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+
+        YearMonth yearMonth = YearMonth.of(year, month);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
+        PageResponseDto<ConsumeListResponseDto> result = consumeService.getConsumeListByMonth(userDetails.getMember(), yearMonth, pageable);
+        return ResponseEntity.ok(ApiResponse.success("월별 소비내역 조회 성공", result));
+    }
+
+    @GetMapping("/category")
+    @Operation(summary = "카테고리별 소비내역 조회", description = "선택한 카테고리에 해당하는 소비내역을 조회합니다.")
+    public ResponseEntity<ApiResponse<PageResponseDto<ConsumeListResponseDto>>> getConsumesByCategory(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody CategoryDto categoryDto,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
+        PageResponseDto<ConsumeListResponseDto> result = consumeService.getConsumeListByCategory(userDetails.getMember(), categoryDto, pageable);
+        return ResponseEntity.ok(ApiResponse.success("카테고리별 소비내역 조회 성공", result));
+    }
+
+    @GetMapping("/card")
+    @Operation(summary = "카드별 소비내역 조회", description = "선택한 카드에 해당하는 소비내역을 조회합니다.")
+    public ResponseEntity<ApiResponse<PageResponseDto<ConsumeListResponseDto>>> getConsumesByCard(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody CardRequestDto cardRequestDto,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
+        PageResponseDto<ConsumeListResponseDto> result = consumeService.getConsumeListByCards(userDetails.getMember(), cardRequestDto, pageable);
+        return ResponseEntity.ok(ApiResponse.success("카드별 소비내역 조회 성공", result));
+    }
+
+    @GetMapping("/categories")
+    @Operation(summary = "카테고리 목록 조회", description = "모든 카테고리 목록을 조회합니다.")
+    public ResponseEntity<ApiResponse<List<CategoryDto>>> getCategories() {
+        return ResponseEntity.ok(ApiResponse.success("카테고리 목록 조회 성공", consumeService.getCategory()));
+    }
+
+    @GetMapping("/cards")
+    @Operation(summary = "보유 카드 목록 조회", description = "사용자가 등록한 모든 카드 목록을 조회합니다.")
+    public ResponseEntity<ApiResponse<List<CardResponseDto>>> getCards(
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ResponseEntity.ok(ApiResponse.success("보유 카드 조회 성공", consumeService.getCards(userDetails.getMember())));
+    }
+    /*// 전체 데이터 조회
     @GetMapping("/")
     @Operation(summary = "전체 데이터 조회", description = "소비 및 지출 기록 내역을 모두 조회합니다.")
     public ResponseEntity<ApiResponse<List<RecordResponseDto>>> getConsumeList(@AuthenticationPrincipal CustomUserDetails userDetails,
@@ -75,5 +144,5 @@ public class ConsumeController {
                                                              @ModelAttribute RecordRequestDto recordRequestDto) {
         consumeService.updateReceipt(userDetails.getMember(), recordRequestDto);
         return ResponseEntity.ok(ApiResponse.success("수정을 완료했습니다."));
-    }
+    }*/
 }

@@ -1,8 +1,11 @@
 package goorm.nuto.Nuto.Service;
 
 import goorm.nuto.Nuto.Dto.*;
+import goorm.nuto.Nuto.Entity.Card;
 import goorm.nuto.Nuto.Entity.CategoryType;
 import goorm.nuto.Nuto.Entity.Member;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -20,4 +23,16 @@ public interface ConsumeService {
     List<RecordResponseDto> getMonthlyReceipts(Member member, YearMonth date, CategoryType categoryType);
     // 기록 수정
     void updateReceipt(Member member, RecordRequestDto dto);
+    // 전체 소비내역 조회
+    PageResponseDto<ConsumeListResponseDto> getAllConsumeList(Member member, Pageable pageable);
+    // 카테고리별 소비내역 조회
+    PageResponseDto<ConsumeListResponseDto> getConsumeListByCategory(Member member, CategoryDto categoryDto,Pageable pageable);
+    // 월별 소비내역 조회
+    PageResponseDto<ConsumeListResponseDto> getConsumeListByMonth(Member member, YearMonth date,Pageable pageable);
+    // 카드별 소비내역 조회
+    PageResponseDto<ConsumeListResponseDto> getConsumeListByCards(Member member, CardRequestDto cardRequestDto,Pageable pageable);
+    // 카테고리 조회
+    List<CategoryDto> getCategory();
+    // 보유 카드 조회
+    List<CardResponseDto> getCards(Member member);
 }
