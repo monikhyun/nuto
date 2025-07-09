@@ -68,6 +68,12 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_047246DA4A29441C81706A27CBFA7121 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_35636D69B5514C42B9FCB871289B214D }}
 
+      - name: Set startup command in App Settings
+        uses: azure/appservice-settings@v1
+        with:
+          app-name: 'nuto'
+          app-settings-json: '[{"name": "STARTUP_COMMAND", "value": "java -jar Nuto-0.0.1-SNAPSHOT.jar"}]'
+
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
