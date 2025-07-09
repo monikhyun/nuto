@@ -1,11 +1,8 @@
 package goorm.nuto.Nuto.Controller;
 
-import goorm.nuto.Nuto.Dto.ApiResponse;
-import goorm.nuto.Nuto.Dto.ConsumeGraphResponseDto;
-import goorm.nuto.Nuto.Dto.CustomUserDetails;
+import goorm.nuto.Nuto.Dto.*;
 import goorm.nuto.Nuto.Entity.Member;
-import goorm.nuto.Nuto.Service.GraphService;
-import io.swagger.v3.oas.annotations.Operation;
+import goorm.nuto.Nuto.Service.CalendarService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -19,14 +16,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/graph")
+@RequestMapping("/api/calendar")
 @RequiredArgsConstructor
 @Slf4j
-public class GraphController {
-    private final GraphService graphService;
+public class CalendarController {
+    private final CalendarService calendarService;
 
     @GetMapping("")
-    public ResponseEntity<ApiResponse<ConsumeGraphResponseDto>> getConsumeGraph(
+    public ResponseEntity<ApiResponse<List<CalendarResponseDto>>> getConsumeGraph(
             @RequestParam(required = false) Integer year,
             @RequestParam(required = false) Integer month,
             @AuthenticationPrincipal CustomUserDetails user) {
@@ -37,17 +34,23 @@ public class GraphController {
         int targetMonth = (month == null) ? now.getMonthValue() : month;
 
         Member member = user.getMember();
-        ConsumeGraphResponseDto consumeGraphResponseDto = graphService.getGraph(member, targetYear, targetMonth);
-        return ResponseEntity.ok(ApiResponse.success(consumeGraphResponseDto));
+        List<CalendarResponseDto> dto = calendarService.getDailyConsumes(member, targetYear, targetMonth);
+        return ResponseEntity.ok(ApiResponse.success(dto));
     }
 
-    //회원가입일 ~ 현재 날짜
-    @GetMapping("/available-months")
-    public ResponseEntity<ApiResponse<List<String>>> getAvailableMonths(
+    @GetMapping("/calendar-summary")
+    public ResponseEntity<ApiResponse<CalendarSummaryDto>> getCalendarSummary(
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Integer month,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         Long memberId = userDetails.getMember().getId();
-        List<String> months = graphService.getAvailableMonths(memberId);
-        return ResponseEntity.ok(ApiResponse.success(months));
+
+        LocalDate now = LocalDate.now();
+        int targetYear = (year == null) ? now.getYear() : year;
+        int targetMonth = (month == null) ? now.getMonthValue() : month;
+
+        CalendarSummaryDto summary = calendarService.getCalendarSummary(memberId, targetYear, targetMonth);
+        return ResponseEntity.ok(ApiResponse.success(summary));
     }
 }
