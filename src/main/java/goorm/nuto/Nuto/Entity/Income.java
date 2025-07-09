@@ -24,6 +24,7 @@ public class Income {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+
     @Column(nullable = false)
     private Double amount;
 
