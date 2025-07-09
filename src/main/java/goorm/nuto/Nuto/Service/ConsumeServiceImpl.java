@@ -5,6 +5,8 @@ import goorm.nuto.Nuto.Entity.*;
 import goorm.nuto.Nuto.Exception.*;
 import goorm.nuto.Nuto.Repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -175,5 +177,97 @@ public class ConsumeServiceImpl implements ConsumeService {
         receipt.setDate(dto.getDate());
         receipt.setCard(card);
         receipt.setCategory(category);
+    }
+    // 전체 소비내역 조회
+    @Override
+    public PageResponseDto<ConsumeListResponseDto> getAllConsumeList(Member member, Pageable pageable) {
+        Page<Consume> consumePage = consumeRepository.findAllByMember(member, pageable);
+
+        Page<ConsumeListResponseDto> mappedPage = consumePage.map(consume -> ConsumeListResponseDto.builder()
+                .name(consume.getName())
+                .amount(consume.getAmount())
+                .cardName(consume.getCard().getName())
+                .date(consume.getDate())
+                .categoryName(consume.getCategory().getName())
+                .build());
+
+        return PageResponseDto.of(mappedPage);
+    }
+
+    // 카테고리별 소비내역 조회
+    @Override
+    public PageResponseDto<ConsumeListResponseDto> getConsumeListByCategory(Member member, CategoryDto categoryDto, Pageable pageable) {
+        Page<Consume> page = consumeRepository.findByMemberAndCategoryName(member, categoryDto.getName(), pageable);
+
+        Page<ConsumeListResponseDto> mappedPage = page.map(consume -> ConsumeListResponseDto.builder()
+                .name(consume.getName())
+                .amount(consume.getAmount())
+                .cardName(consume.getCard().getName())
+                .date(consume.getDate())
+                .categoryName(consume.getCategory().getName())
+                .build());
+
+        return PageResponseDto.of(mappedPage);
+    }
+
+    // 월별 소비내역 조회
+    @Override
+    public PageResponseDto<ConsumeListResponseDto> getConsumeListByMonth(Member member, YearMonth date, Pageable pageable) {
+        int year = date.getYear();
+        int month = date.getMonthValue();
+
+        Page<Consume> page = consumeRepository.findByMemberAndYearAndMonth(member, year, month, pageable);
+
+        Page<ConsumeListResponseDto> mappedPage = page.map(consume -> ConsumeListResponseDto.builder()
+                .name(consume.getName())
+                .amount(consume.getAmount())
+                .cardName(consume.getCard().getName())
+                .date(consume.getDate())
+                .categoryName(consume.getCategory().getName())
+                .build());
+
+        return PageResponseDto.of(mappedPage);
+    }
+
+    // 카드별 소비내역 조회
+    @Override
+    public PageResponseDto<ConsumeListResponseDto> getConsumeListByCards(Member member, CardRequestDto cardRequestDto, Pageable pageable) {
+        Card card = cardRepository.findByMemberAndCardNumber(member, cardRequestDto.getCardNumber())
+                .orElseThrow(() -> new IllegalArgumentException("해당 카드를 찾을 수 없습니다."));
+
+        Page<Consume> page = consumeRepository.findByMemberAndCard(member, card, pageable);
+
+        Page<ConsumeListResponseDto> mappedPage = page.map(consume -> ConsumeListResponseDto.builder()
+                .name(consume.getName())
+                .amount(consume.getAmount())
+                .cardName(consume.getCard().getName())
+                .date(consume.getDate())
+                .categoryName(consume.getCategory().getName())
+                .build());
+
+        return PageResponseDto.of(mappedPage);
+    }
+    // 카테고리 조회
+    @Override
+    public List<CategoryDto> getCategory() {
+        List<Category> categories = categoryRepository.findAll();
+
+        return categories.stream()
+                .map(category -> CategoryDto.builder()
+                        .id(category.getId())
+                        .name(category.getName())
+                        .type(category.getType().name())
+                        .build())
+                .toList();
+    }
+    // 보유 카드 조회
+    @Override
+    public List<CardResponseDto> getCards(Member member) {
+        List<Card> cards = cardRepository.findByMember(member)
+                .orElseThrow(() -> new IllegalArgumentException("보유한 카드가 없습니다."));
+
+        return cards.stream()
+                .map(CardResponseDto::new)
+                .toList();
     }
 }

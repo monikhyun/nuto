@@ -1,7 +1,9 @@
 package goorm.nuto.Nuto.Repository;
 
+import goorm.nuto.Nuto.Entity.Card;
 import goorm.nuto.Nuto.Entity.Consume;
 import goorm.nuto.Nuto.Entity.Member;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -54,4 +56,12 @@ public interface ConsumeRepository extends JpaRepository<Consume, Long> {
 
     Optional<Consume> findConsumeByReceiptId(Long receiptId);
     void deleteByReceiptId(Long receiptId);
+    Page<Consume> findAllByMember(Member member, Pageable pageable);
+
+    Page<Consume> findByMemberAndCard(Member member, Card card, Pageable pageable);
+    Page<Consume> findByMemberAndCategoryName(Member member, String categoryName, Pageable pageable);
+    Page<Consume> findByMemberAndYearAndMonth(Member member, int year, int month, Pageable pageable);
+
+    @Query("SELECT c FROM Consume c WHERE c.member = :member AND c.category.id = :categoryId")
+    Page<Consume> findByMemberAndCategoryId(@Param("member") Member member, @Param("categoryId") Long categoryId, Pageable pageable);
 }
