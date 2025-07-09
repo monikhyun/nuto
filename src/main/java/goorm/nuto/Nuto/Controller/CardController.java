@@ -1,10 +1,7 @@
 package goorm.nuto.Nuto.Controller;
 
 
-import goorm.nuto.Nuto.Dto.ApiResponse;
-import goorm.nuto.Nuto.Dto.CardDto;
-import goorm.nuto.Nuto.Dto.CardResponseDto;
-import goorm.nuto.Nuto.Dto.CustomUserDetails;
+import goorm.nuto.Nuto.Dto.*;
 import goorm.nuto.Nuto.Service.CardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -83,12 +80,12 @@ public class CardController {
         return ResponseEntity.ok(ApiResponse.success("카드 수정 성공"));
     }
 
-    @DeleteMapping("/delete/{cardId}")
+    @DeleteMapping("/delete")
     public ResponseEntity<ApiResponse<String>> deleteCard(
-            @PathVariable("cardId") Long cardId,@AuthenticationPrincipal CustomUserDetails userDetails) {
+            @RequestBody DeleteRequestDto dto, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         Long memberId = userDetails.getMember().getId();
-        cardService.deleteCard(memberId,cardId);
+        cardService.deleteCards(memberId,dto.getIds());
         return ResponseEntity.ok(ApiResponse.success("카드 삭제 성공"));
     }
 

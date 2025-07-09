@@ -53,7 +53,11 @@ public class Consume {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    public static Consume create(String name, Long amount, LocalDate date, Card card, Category category, Member member) {
+    @OneToOne
+    @JoinColumn(name = "receipt_id", unique = true, nullable = false)
+    private Receipt receipt;
+
+    public static Consume create(String name, Long amount, LocalDate date, Card card, Category category, Member member,Receipt receipt) {
         return Consume.builder()
                 .name(name)
                 .amount(amount)
@@ -65,6 +69,9 @@ public class Consume {
                 .card(card)
                 .category(category)
                 .member(member)
+                .receipt(receipt)
                 .build();
     }
+
+
 }

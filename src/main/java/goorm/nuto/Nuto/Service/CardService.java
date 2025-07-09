@@ -18,5 +18,5 @@ public interface CardService {
 
     void modifyCard(Long memberId,CardDto dto);
 
-    void deleteCard(Long memberId,Long cardId);
+    void deleteCards(Long memberId,List<Long> cardIds);
 }
