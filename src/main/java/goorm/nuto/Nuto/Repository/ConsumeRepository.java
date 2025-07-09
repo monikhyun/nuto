@@ -64,4 +64,45 @@ public interface ConsumeRepository extends JpaRepository<Consume, Long> {
 
     @Query("SELECT c FROM Consume c WHERE c.member = :member AND c.category.id = :categoryId")
     Page<Consume> findByMemberAndCategoryId(@Param("member") Member member, @Param("categoryId") Long categoryId, Pageable pageable);
+
+
+    @Query("SELECT SUM(c.amount) FROM Consume c WHERE c.member.id = :memberId AND YEAR(c.date) = :year AND MONTH(c.date) = :month")
+    Long findTotalAmountByMonth(@Param("memberId") Long memberId,
+                                @Param("year") int year,
+                                @Param("month") int month);
+
+    @Query(value = """
+    SELECT MAX(total) FROM (
+        SELECT SUM(amount) AS total
+        FROM consume
+        WHERE member_id = :memberId AND YEAR(date) = :year AND MONTH(date) = :month
+        GROUP BY date
+    ) AS sub
+    """, nativeQuery = true)
+    Long findMaxDailyConsumeAmount(Long memberId, int year, int month);
+    @Query("SELECT c.date FROM Consume c WHERE c.member.id = :memberId AND YEAR(c.date) = :year AND MONTH(c.date) = :month GROUP BY c.date HAVING SUM(c.amount) = :targetAmount")
+    List<LocalDate> findTopSpendDaysByAmount(@Param("memberId") Long memberId,
+                                             @Param("year") int year,
+                                             @Param("month") int month,
+                                             @Param("targetAmount") Long targetAmount);
+
+    @Query(value = """
+    SELECT MAX(total) FROM (
+        SELECT SUM(amount) AS total
+        FROM consume
+        WHERE member_id = :memberId
+          AND YEAR(date) = :year
+          AND MONTH(date) = :month
+        GROUP BY category_id
+    ) AS category_totals
+    """, nativeQuery = true)
+    Long findMaxDailyConsumeCategory(@Param("memberId") Long memberId,
+                                     @Param("year") int year,
+                                     @Param("month") int month);
+
+    @Query("SELECT c.category.name FROM Consume c WHERE c.member.id = :memberId AND YEAR(c.date) = :year AND MONTH(c.date) = :month GROUP BY c.category HAVING SUM(c.amount) = :totalAmount")
+    List<String> findTopSpendDaysByCategory(@Param("memberId") Long memberId,
+                                             @Param("year") int year,
+                                             @Param("month") int month,
+                                             @Param("totalAmount") Long category);
 }

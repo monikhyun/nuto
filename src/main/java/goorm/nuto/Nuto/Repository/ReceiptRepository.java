@@ -39,6 +39,21 @@ public interface ReceiptRepository extends JpaRepository<Receipt, Long> {
             Pageable pageable
     );
 
+    @Query("""
+    SELECT r FROM Receipt r
+    WHERE r.member = :member
+      AND r.category.type = 'EXPENSE'
+      AND FUNCTION('YEAR', r.date) = :year
+      AND FUNCTION('MONTH', r.date) = :month
+    ORDER BY r.date ASC
+    """)
+    List<Receipt> findExpenseReceiptsByMemberAndYearMonth(
+            @Param("member") Member member,
+            @Param("year") int year,
+            @Param("month") int month
+    );
+
+
     @Query("SELECT new goorm.nuto.Nuto.Dto.MonthlyReceiptDto(YEAR(r.date), MONTH(r.date), COUNT(r)) " +
             "FROM Receipt r WHERE r.member = :member GROUP BY YEAR(r.date), MONTH(r.date) ORDER BY YEAR(r.date) DESC, MONTH(r.date) DESC")
     Page<MonthlyReceiptDto> findMonthlyReceiptByMemberId(@Param("member") Member member, Pageable pageable);
