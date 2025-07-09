@@ -43,11 +43,11 @@ jobs:
           CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
           PORT: ${{ secrets.PORT }}
 
-      - name: Prepare JAR and create deploy.zip
+      - name: Package JAR as deploy.zip
         run: |
           mkdir deploy
           cp build/libs/Nuto-0.0.1-SNAPSHOT.jar deploy/
-          cd deploy && zip ../deploy.zip Nuto-0.0.1-SNAPSHOT.jar
+          cd deploy && zip -r ../deploy.zip .
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -56,13 +56,13 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_047246DA4A29441C81706A27CBFA7121 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_35636D69B5514C42B9FCB871289B214D }}
 
-      - name: Set startup command in App Settings
+      - name: Set Startup Command (optional if already set)
         uses: azure/appservice-settings@v1
         with:
           app-name: 'nuto'
           app-settings-json: '[{"name": "STARTUP_COMMAND", "value": "java -jar Nuto-0.0.1-SNAPSHOT.jar"}]'
 
-      - name: Deploy ZIP to Azure Web App
+      - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'nuto'
