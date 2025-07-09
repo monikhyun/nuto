@@ -1,9 +1,12 @@
 package goorm.nuto.Nuto.Service;
 
 import goorm.nuto.Nuto.Dto.*;
+import goorm.nuto.Nuto.Entity.Card;
+import goorm.nuto.Nuto.Entity.CardType;
 import goorm.nuto.Nuto.Entity.Member;
 import goorm.nuto.Nuto.Entity.Role;
 import goorm.nuto.Nuto.Exception.*;
+import goorm.nuto.Nuto.Repository.CardRepository;
 import goorm.nuto.Nuto.Repository.MemberRepository;
 import goorm.nuto.Nuto.jwt.JwtToken;
 import goorm.nuto.Nuto.jwt.JwtTokenProvider;
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Duration;
+import java.time.YearMonth;
 import java.util.Optional;
 import java.util.Random;
 
@@ -38,6 +42,7 @@ public class MemberServiceImpl implements MemberService {
 
     private static final String AUTH_CODE_PREFIX = "AuthCode:";
     private static final String VERIFIED_EMAIL_PREFIX = "VerifiedEmail:";
+    private final CardRepository cardRepository;
 
     @Value("${spring.mail.auth-code-expiration-millis:180000}") // 기본 3분
     private long authCodeExpirationMillis;
@@ -82,6 +87,16 @@ public class MemberServiceImpl implements MemberService {
                 .build();
 
         memberRepository.save(member);
+
+        // 가입 시 기타 카드 생성
+        cardRepository.save(Card.builder()
+                .cardNumber("0000-0000-0000-0000")
+                .cardType(CardType.OTHER)
+                .member(member)
+                .name("기타")
+                .expiryDate(YearMonth.of(2099, 12))
+                .totalAmount(0L)
+                .build());
     }
 
     @Override
