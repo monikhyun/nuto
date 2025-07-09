@@ -7,10 +7,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      id-token: write
 
     steps:
       - name: Checkout repository
@@ -42,24 +43,11 @@ jobs:
           CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
           PORT: ${{ secrets.PORT }}
 
-      - name: Upload JAR for deployment
-        uses: actions/upload-artifact@v4
-        with:
-          name: java-app
-          path: build/libs/Nuto-0.0.1-SNAPSHOT.jar
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    permissions:
-      id-token: write
-      contents: read
-
-    steps:
-      - name: Download JAR from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: java-app
+      - name: Prepare JAR for Azure
+        run: |
+          mkdir package
+          cp build/libs/Nuto-0.0.1-SNAPSHOT.jar package/Nuto-0.0.1-SNAPSHOT.jar
+          cd package && zip ../deploy.zip Nuto-0.0.1-SNAPSHOT.jar
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -78,4 +66,4 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'nuto'
-          package: 'Nuto-0.0.1-SNAPSHOT.jar'
+          package: 'deploy.zip'
