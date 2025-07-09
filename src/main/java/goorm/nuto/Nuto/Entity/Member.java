@@ -3,6 +3,7 @@ package goorm.nuto.Nuto.Entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,9 @@ public class Member {
 
     private String job;
 
+    @Column(nullable = false, updatable = false)
+    private LocalDate createdDate;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Card> cards;
 
@@ -42,4 +46,9 @@ public class Member {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Receipt> receipts;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdDate = LocalDate.now();
+    }
 }
