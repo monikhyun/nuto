@@ -46,6 +46,7 @@ public class ReceiptServiceImpl implements ReceiptService {
                 .card(card)
                 .category(category)
                 .member(member)
+                .imageUrl(dto.getImageUrl())
                 .build();
 
         receiptRepository.save(receipt);

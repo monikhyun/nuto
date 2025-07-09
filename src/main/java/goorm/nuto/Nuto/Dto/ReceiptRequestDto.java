@@ -14,5 +14,6 @@ public class ReceiptRequestDto {
     private LocalDate date;
     private Long cardId;
     private Long categoryId;
+    private String imageUrl;
     //private CategoryType categoryType;
 }
