@@ -43,11 +43,11 @@ jobs:
           CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
           PORT: ${{ secrets.PORT }}
 
-      - name: Prepare JAR for Azure
+      - name: Prepare JAR and create deploy.zip
         run: |
-          mkdir package
-          cp build/libs/Nuto-0.0.1-SNAPSHOT.jar package/Nuto-0.0.1-SNAPSHOT.jar
-          cd package && zip ../deploy.zip Nuto-0.0.1-SNAPSHOT.jar
+          mkdir deploy
+          cp build/libs/Nuto-0.0.1-SNAPSHOT.jar deploy/
+          cd deploy && zip ../deploy.zip Nuto-0.0.1-SNAPSHOT.jar
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -62,8 +62,8 @@ jobs:
           app-name: 'nuto'
           app-settings-json: '[{"name": "STARTUP_COMMAND", "value": "java -jar Nuto-0.0.1-SNAPSHOT.jar"}]'
 
-      - name: Deploy to Azure Web App
+      - name: Deploy ZIP to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'nuto'
-          package: 'deploy.zip'
+          package: deploy.zip
