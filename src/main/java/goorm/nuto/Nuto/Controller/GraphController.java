@@ -1,4 +1,4 @@
-package goorm.nuto.Nuto.Config;
+package goorm.nuto.Nuto.Controller;
 
 import goorm.nuto.Nuto.Dto.ApiResponse;
 import goorm.nuto.Nuto.Dto.ConsumeGraphResponseDto;
