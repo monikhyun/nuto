@@ -3,6 +3,7 @@ package goorm.nuto.Nuto.Controller;
 import goorm.nuto.Nuto.Dto.*;
 import goorm.nuto.Nuto.Service.CloudinaryService;
 import goorm.nuto.Nuto.Service.ReceiptService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/receipts")
 @RequiredArgsConstructor
+@Tag(name = "ReceiptController", description = "영수증 관련 API")
 public class ReceiptController {
     private final ReceiptService receiptService;
     private final CloudinaryService cloudinaryService;

@@ -1,5 +1,6 @@
 package goorm.nuto.Nuto.Repository;
 
+import goorm.nuto.Nuto.Dto.DailyConsumeDto;
 import goorm.nuto.Nuto.Entity.Card;
 import goorm.nuto.Nuto.Entity.Consume;
 import goorm.nuto.Nuto.Entity.Member;
@@ -105,4 +106,22 @@ public interface ConsumeRepository extends JpaRepository<Consume, Long> {
                                              @Param("year") int year,
                                              @Param("month") int month,
                                              @Param("totalAmount") Long category);
+
+    @Query("SELECT c.category, SUM(c.amount) as total " +
+            "FROM Consume c " +
+            "WHERE c.member = :member AND c.year = :year AND c.month = :month " +
+            "GROUP BY c.category " +
+            "ORDER BY total DESC")
+    List<Object[]> findTop3CategoriesByMemberAndMonth(@Param("member") Member member,
+                                                      @Param("year") int year,
+                                                      @Param("month") int month);
+
+
+    @Query("SELECT new goorm.nuto.Nuto.Dto.DailyConsumeDto(" +
+            "MIN(c.id), SUM(c.amount), c.category.name, c.date) " +
+            "FROM Consume c " +
+            "WHERE c.member = :member " +
+            "GROUP BY c.date, c.category " +
+            "ORDER BY c.date DESC")
+    List<DailyConsumeDto> findDailyConsumesByMember(@Param("member") Member member);
 }

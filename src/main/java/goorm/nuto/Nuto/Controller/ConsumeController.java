@@ -6,6 +6,7 @@ import goorm.nuto.Nuto.Entity.CategoryType;
 import goorm.nuto.Nuto.Service.ConsumeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.StringToClassMapItem;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/consumption")
 @RequiredArgsConstructor
+@Tag(name = "ConsumeController", description = "소비 페이지 관련 API")
 public class ConsumeController {
     private final ConsumeService consumeService;
 
