@@ -124,4 +124,14 @@ public interface ConsumeRepository extends JpaRepository<Consume, Long> {
             "GROUP BY c.date, c.category " +
             "ORDER BY c.date DESC")
     List<DailyConsumeDto> findDailyConsumesByMember(@Param("member") Member member);
+
+    @Query("SELECT new goorm.nuto.Nuto.Dto.DailyConsumeDto(" +
+            "MIN(c.id), SUM(c.amount), MAX(c.category.name), c.date) " +
+            "FROM Consume c " +
+            "WHERE c.member = :member AND c.year = :year AND c.month = :month " +
+            "GROUP BY c.date " +
+            "ORDER BY c.date DESC")
+    List<DailyConsumeDto> findDailySummaryByMemberAndMonth(@Param("member") Member member,
+                                                           @Param("year") int year,
+                                                           @Param("month") int month);
 }

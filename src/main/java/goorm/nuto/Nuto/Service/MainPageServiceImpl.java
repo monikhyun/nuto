@@ -51,7 +51,11 @@ public class MainPageServiceImpl implements MainPageService {
     // 날짜별 금액 및 카테고리 조회
     @Override
     public List<DailyConsumeDto> getDailyConsume(Member member) {
-        return consumeRepository.findDailyConsumesByMember(member);
+        LocalDate now = LocalDate.now();
+        int year = now.getYear();
+        int month = now.getMonthValue();
+
+        return consumeRepository.findDailySummaryByMemberAndMonth(member, year, month);
     }
 
 
