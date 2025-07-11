@@ -23,7 +23,7 @@ public class CardController {
     @PostMapping("/")
     public ResponseEntity<ApiResponse<String>> createCard(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestBody CardDto dto) {
+            @RequestBody CardSaveDto dto) {
 
         Long memberId = userDetails.getMember().getId();
 

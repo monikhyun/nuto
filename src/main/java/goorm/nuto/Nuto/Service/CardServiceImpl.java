@@ -2,6 +2,7 @@ package goorm.nuto.Nuto.Service;
 
 import goorm.nuto.Nuto.Dto.CardDto;
 import goorm.nuto.Nuto.Dto.CardResponseDto;
+import goorm.nuto.Nuto.Dto.CardSaveDto;
 import goorm.nuto.Nuto.Entity.*;
 import goorm.nuto.Nuto.Exception.NotAuthorizedCardAccessException;
 import goorm.nuto.Nuto.Exception.NotFoundCardException;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,26 +32,36 @@ public class CardServiceImpl implements CardService {
     private final IncomeRepository incomeRepository;
 
     @Override
-    public void saveCard(Long memberId, CardDto dto) {
-        // 1) memberId 로 Member 조회
+    public void saveCard(Long memberId, CardSaveDto dto) {
+        // 1) Member 조회
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
 
         if (cardRepository.findByMemberAndCardNumber(member, dto.getCardNumber()).isPresent()) {
             throw new DuplicateCardNumberException();
         }
+        YearMonth expiryYearMonth;
+        try {
+            String[] parts = dto.getExpiryDate().split("/");
+            if (parts.length != 2) throw new IllegalArgumentException("유효하지 않은 만료 날짜 형식");
 
-        // 2) Card 엔티티 생성 & 저장
+            int month = Integer.parseInt(parts[0]);
+            int year = 2000 + Integer.parseInt(parts[1]); // "26" -> 2026
+
+            expiryYearMonth = YearMonth.of(year, month);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("카드 만료일은 MM/YY 형식이어야 합니다. 예: 07/26", e);
+        }
+
         Card card = Card.builder()
                 .cardNumber(dto.getCardNumber())
                 .cardType(CardType.valueOf(dto.getCardType()))
                 .totalAmount(dto.getTotalAmount())
-                .expiryDate(dto.getExpiryDate())
+                .expiryDate(expiryYearMonth)
                 .member(member)
                 .build();
 
         cardRepository.save(card);
-
     }
 
     @Override

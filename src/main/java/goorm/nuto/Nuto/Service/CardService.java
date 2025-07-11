@@ -2,6 +2,7 @@ package goorm.nuto.Nuto.Service;
 
 import goorm.nuto.Nuto.Dto.CardDto;
 import goorm.nuto.Nuto.Dto.CardResponseDto;
+import goorm.nuto.Nuto.Dto.CardSaveDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -9,7 +10,7 @@ import java.util.List;
 
 public interface CardService {
 
-    void saveCard(Long memberId, CardDto dto);
+    void saveCard(Long memberId, CardSaveDto dto);
 
     CardResponseDto getCard(Long memberId,Long cardId);
 
