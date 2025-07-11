@@ -3,6 +3,7 @@ package goorm.nuto.Nuto.Controller;
 import goorm.nuto.Nuto.Dto.*;
 import goorm.nuto.Nuto.Entity.Member;
 import goorm.nuto.Nuto.Service.CalendarService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequestMapping("/api/calendar")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "CalendarController", description = "달력 관련 API")
 public class CalendarController {
     private final CalendarService calendarService;
 

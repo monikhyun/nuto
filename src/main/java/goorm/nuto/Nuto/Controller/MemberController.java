@@ -4,6 +4,7 @@ import goorm.nuto.Nuto.Dto.*;
 import goorm.nuto.Nuto.Service.MemberService;
 import goorm.nuto.Nuto.jwt.JwtToken;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "MemberController", description = "인증 관련 API")
 public class MemberController {
 
     private final MemberService memberService;

@@ -4,6 +4,7 @@ import goorm.nuto.Nuto.Dto.*;
 import goorm.nuto.Nuto.Entity.Member;
 import goorm.nuto.Nuto.Service.DashBoardService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequestMapping("/api/dashboard")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "DashBoardController", description = "대시보드 관련 API")
 public class DashBoardController {
     private final DashBoardService dashBoardService;
 

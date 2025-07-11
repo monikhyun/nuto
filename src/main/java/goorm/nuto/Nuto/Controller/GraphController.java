@@ -6,6 +6,7 @@ import goorm.nuto.Nuto.Dto.CustomUserDetails;
 import goorm.nuto.Nuto.Entity.Member;
 import goorm.nuto.Nuto.Service.GraphService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import java.util.List;
 @RequestMapping("/api/graph")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "GraphController", description = "그래프 관련 API")
 public class GraphController {
     private final GraphService graphService;
 

@@ -3,6 +3,7 @@ package goorm.nuto.Nuto.Controller;
 
 import goorm.nuto.Nuto.Dto.*;
 import goorm.nuto.Nuto.Service.CardService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/cards")
 @RequiredArgsConstructor
+@Tag(name = "CardController", description = "카드 관련 API")
 public class CardController {
     private final CardService cardService;
 
