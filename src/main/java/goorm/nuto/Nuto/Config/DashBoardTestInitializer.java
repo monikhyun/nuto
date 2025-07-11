@@ -133,7 +133,7 @@ public class DashBoardTestInitializer {
     }
 
     private void insertDailyConsumesFromCSV(Member member, List<Card> cardList, Map<String, Category> categoryMap) {
-        String csvPath = "nuto/src/main/resources/DailyExpenseTestData.csv";
+        String csvPath = "src/main/resources/DailyExpenseTestData.csv";
         try (BufferedReader br = new BufferedReader(new FileReader(csvPath))) {
             String line;
             boolean skip = true;
