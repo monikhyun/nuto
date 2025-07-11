@@ -26,11 +26,11 @@ public interface ConsumeService {
     // 전체 소비내역 조회
     PageResponseDto<ConsumeListResponseDto> getAllConsumeList(Member member, Pageable pageable);
     // 카테고리별 소비내역 조회
-    PageResponseDto<ConsumeListResponseDto> getConsumeListByCategory(Member member, CategoryDto categoryDto,Pageable pageable);
+    PageResponseDto<ConsumeListResponseDto> getConsumeListByCategory(Member member, String categoryName,Pageable pageable);
     // 월별 소비내역 조회
     PageResponseDto<ConsumeListResponseDto> getConsumeListByMonth(Member member, YearMonth date,Pageable pageable);
     // 카드별 소비내역 조회
-    PageResponseDto<ConsumeListResponseDto> getConsumeListByCards(Member member, CardRequestDto cardRequestDto,Pageable pageable);
+    PageResponseDto<ConsumeListResponseDto> getConsumeListByCards(Member member, Long cardId,Pageable pageable);
     // 카테고리 조회
     List<CategoryDto> getCategory();
     // 보유 카드 조회

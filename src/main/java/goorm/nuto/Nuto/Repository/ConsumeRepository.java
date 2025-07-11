@@ -58,7 +58,7 @@ public interface ConsumeRepository extends JpaRepository<Consume, Long> {
     void deleteByReceiptId(Long receiptId);
     Page<Consume> findAllByMember(Member member, Pageable pageable);
 
-    Page<Consume> findByMemberAndCard(Member member, Card card, Pageable pageable);
+    Page<Consume> findByMemberAndCardId(Member member, Long cardId, Pageable pageable);
     Page<Consume> findByMemberAndCategoryName(Member member, String categoryName, Pageable pageable);
     Page<Consume> findByMemberAndYearAndMonth(Member member, int year, int month, Pageable pageable);
 

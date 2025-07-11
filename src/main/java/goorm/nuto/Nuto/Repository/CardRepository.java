@@ -15,4 +15,5 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     Page<Card> findByMemberOrderByIdDesc(Member member, Pageable pageable);
     Optional<Card> findByCardTypeAndMemberId(CardType type, Long memberId);
     Optional<Card> findByMemberAndCardNumber(Member member, String cardNumber);
+    Optional<Card> findByMemberAndId(Member member, Long cardId);
 }

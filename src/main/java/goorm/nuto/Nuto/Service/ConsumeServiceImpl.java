@@ -196,8 +196,8 @@ public class ConsumeServiceImpl implements ConsumeService {
 
     // 카테고리별 소비내역 조회
     @Override
-    public PageResponseDto<ConsumeListResponseDto> getConsumeListByCategory(Member member, CategoryDto categoryDto, Pageable pageable) {
-        Page<Consume> page = consumeRepository.findByMemberAndCategoryName(member, categoryDto.getName(), pageable);
+    public PageResponseDto<ConsumeListResponseDto> getConsumeListByCategory(Member member, String categoryName, Pageable pageable) {
+        Page<Consume> page = consumeRepository.findByMemberAndCategoryName(member, categoryName, pageable);
 
         Page<ConsumeListResponseDto> mappedPage = page.map(consume -> ConsumeListResponseDto.builder()
                 .name(consume.getName())
@@ -231,11 +231,11 @@ public class ConsumeServiceImpl implements ConsumeService {
 
     // 카드별 소비내역 조회
     @Override
-    public PageResponseDto<ConsumeListResponseDto> getConsumeListByCards(Member member, CardRequestDto cardRequestDto, Pageable pageable) {
-        Card card = cardRepository.findByMemberAndCardNumber(member, cardRequestDto.getCardNumber())
+    public PageResponseDto<ConsumeListResponseDto> getConsumeListByCards(Member member, Long cardId, Pageable pageable) {
+        Card card = cardRepository.findByMemberAndId(member, cardId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 카드를 찾을 수 없습니다."));
 
-        Page<Consume> page = consumeRepository.findByMemberAndCard(member, card, pageable);
+        Page<Consume> page = consumeRepository.findByMemberAndCardId(member, cardId, pageable);
 
         Page<ConsumeListResponseDto> mappedPage = page.map(consume -> ConsumeListResponseDto.builder()
                 .name(consume.getName())
