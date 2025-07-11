@@ -68,12 +68,12 @@ public class ConsumeController {
     @Operation(summary = "카테고리별 소비내역 조회", description = "선택한 카테고리에 해당하는 소비내역을 조회합니다.")
     public ResponseEntity<ApiResponse<PageResponseDto<ConsumeListResponseDto>>> getConsumesByCategory(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestBody CategoryDto categoryDto,
+            @RequestParam(defaultValue = "의류/화장품") String categoryName,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
-        PageResponseDto<ConsumeListResponseDto> result = consumeService.getConsumeListByCategory(userDetails.getMember(), categoryDto, pageable);
+        PageResponseDto<ConsumeListResponseDto> result = consumeService.getConsumeListByCategory(userDetails.getMember(), categoryName, pageable);
         return ResponseEntity.ok(ApiResponse.success("카테고리별 소비내역 조회 성공", result));
     }
 
@@ -81,12 +81,12 @@ public class ConsumeController {
     @Operation(summary = "카드별 소비내역 조회", description = "선택한 카드에 해당하는 소비내역을 조회합니다.")
     public ResponseEntity<ApiResponse<PageResponseDto<ConsumeListResponseDto>>> getConsumesByCard(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestBody CardRequestDto cardRequestDto,
+            @RequestParam(defaultValue = "2") Long cardId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
-        PageResponseDto<ConsumeListResponseDto> result = consumeService.getConsumeListByCards(userDetails.getMember(), cardRequestDto, pageable);
+        PageResponseDto<ConsumeListResponseDto> result = consumeService.getConsumeListByCards(userDetails.getMember(), cardId, pageable);
         return ResponseEntity.ok(ApiResponse.success("카드별 소비내역 조회 성공", result));
     }
 
